@@ -1,5 +1,6 @@
 # C# ASP.NET Learning Project (Craftopia) - Product Information Website
-![image](https://github.com/sam-burford/Craftopia/assets/60924660/09cd36e9-2811-47a2-ba67-5f0d41fb9258)
+![image](https://github.com/sam-burford/Craftopia/assets/60924660/03587e63-e7e8-4c03-b75d-4552e6927dcb)
+
 
 ## Overview
 This is a learning project that serves as a simple web application built using C# ASP.NET. The main purpose of this project is to gain hands-on experience in developing a web application that reads product information from a flat-file database (JSON file) and displays it to users. Throughout the development of this project, I have learned and practiced various technologies and concepts including C#, HTML, JavaScript, Razor, Blazor, and ASP.NET components, services, and controllers.
