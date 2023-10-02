@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Craftopia.WebSite.Models
+@using Craftopia.WebSite.Services
+@inject JsonFileProductsService ProductService
+
+<div class="card-columns">
+    @foreach (var product in ProductService.GetProducts())
+    {
+        <div class="card">
+            <div class="card-img" style="background-image: url('@product.Image')"></div>
+            <div class="card-body">
+                <h5 class="card-title">@product.Title</h5>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">
+                    <button @onclick="(e => SelectProduct(product.Id))" 
+                        data-toggle="modal" data-target="#productModal"
+                        class="btn btn-primary">More Info</button>
+                </small>
+                </div>
+        </div>
+    }
+</div>
+
+<script>
+    @if(selectedProduct != null)
+        {
+        <text>
+            let modal = document.querySelector("productModal");
+            $(modal).modal("show");
+        </text>
+    }
+</script>
+
+@if (selectedProduct != null)
+{
+    <div class="modal fade show" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productTitle">@selectedProduct.Title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-img" style="background-image: url('@selectedProduct.Image');">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">@selectedProduct.Description</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    Product selectedProduct;
+    string selectedProductId;
+
+    void SelectProduct(string productId)
+    {
+        selectedProductId = productId;
+        var temp = ProductService.GetProducts();
+        selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
+    }
+}
