@@ -19,7 +19,7 @@ namespace Craftopia.WebSite.Controllers
         [HttpGet]
         public IEnumerable<Product> Get()
         {
-            return ProductsService.GetProducts();
+            return ProductsService.GetProductsOrDefault();
         }
 
         [Route("rate")]

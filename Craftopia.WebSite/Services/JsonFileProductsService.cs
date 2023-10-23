@@ -5,36 +5,61 @@ namespace Craftopia.WebSite.Services
 {
     public class JsonFileProductsService
     {
-        public IWebHostEnvironment WebHostEnvironment { get; }
 
         public JsonFileProductsService(IWebHostEnvironment webHostEnvironment) 
         {
             WebHostEnvironment = webHostEnvironment;
         }
 
-        private string JsonFileName
-        {
-            get { return Path.Combine(WebHostEnvironment.WebRootPath, "data", "products.json"); }
-        }
+        public IWebHostEnvironment WebHostEnvironment { get; }
 
-        public IEnumerable<Product> GetProducts()
+        private string JsonFileName => Path.Combine(WebHostEnvironment.WebRootPath, "data", "products.json");
+
+        private string ReadJsonFile()
         {
-            using (var jsonFileReader = File.OpenText(JsonFileName))
+            var json = "";
+
+            try
             {
-#pragma warning disable CS8603 // Possible null reference return.
-                return JsonSerializer.Deserialize<Product[]>(jsonFileReader.ReadToEnd(),
-                    new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    }
-                );
-#pragma warning restore CS8603 // Possible null reference return.
+				using var jsonFileReader = File.OpenText(JsonFileName);
+				json = jsonFileReader.ReadToEnd();
+			}
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
+
+            return json;
+		}
+
+        private IEnumerable<Product>? ParseProducts(string jsonString)
+        {
+			return JsonSerializer.Deserialize<Product[]>(jsonString,
+				new JsonSerializerOptions
+				{
+					PropertyNameCaseInsensitive = true
+				}
+			);
+		}
+
+        /// <summary>
+        /// Retrieves a list of Products from the JSON file. 
+        /// </summary>
+        /// <returns>A list of products or an empty list. </returns>
+        public IEnumerable<Product> GetProductsOrDefault()
+        {
+            string json = ReadJsonFile();
+            IEnumerable<Product>? products = ParseProducts(json);
+
+            // Null-condition operator - will assign the products variable only if it is null. 
+            products ??= Array.Empty<Product>();
+
+            return products;
         }
 
         public void AddRating(string productId, int rating)
         {
-            var products = GetProducts();
+            var products = GetProductsOrDefault();
             var query = products.First(x => x.Id == productId);
 
             if (query.Ratings == null)
